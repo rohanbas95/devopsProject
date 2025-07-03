@@ -1,4 +1,7 @@
 name: Build Specific Folder
+
+run-name: Build Folder ${{ inputs.level }}
+
 on:
   workflow_dispatch:
     inputs:
