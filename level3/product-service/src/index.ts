@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 const app = express();
 const port = 3002;
-// test changes
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -29,6 +29,18 @@ app.post('/api/products', async (req, res) => {
   const product = new Product(req.body);
   await product.save();
   res.json(product);
+});
+
+app.put('/api/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
+  res.json(updatedProduct);
+});
+
+app.delete('/api/products/:id', async (req, res) => {
+  const { id } = req.params;
+  await Product.findByIdAndDelete(id);
+  res.sendStatus(204);
 });
 
 app.listen(port, () => {
