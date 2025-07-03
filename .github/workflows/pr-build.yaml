@@ -23,7 +23,8 @@ jobs:
       - name: 🛠️ Detect Changed Folders
         id: detect-changes
         run: |
-          CHANGED_FOLDERS=$(git diff --name-only HEAD~1 | grep -oE '^level[0-9]+/' | uniq)
+          git fetch --depth=2 # Ensure enough history is fetched
+          CHANGED_FOLDERS=$(git diff --name-only origin/main | grep -oE '^level[0-9]+/' | uniq)
           echo "changed_folders=$CHANGED_FOLDERS" >> $GITHUB_ENV
 
       - name: 🏗️ Build Changed Folders
