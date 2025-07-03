@@ -31,6 +31,18 @@ app.post('/api/users', async (req, res) => {
   res.json(user);
 });
 
+app.put('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+  res.json(updatedUser);
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  await User.findByIdAndDelete(id);
+  res.sendStatus(204);
+});
+
 app.listen(port, () => {
   console.log(`User service listening at http://localhost:${port}`);
 });
