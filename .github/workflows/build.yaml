@@ -1,0 +1,49 @@
+name: Build Specific Folder
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: "Specify the level folder to build (e.g., level1)"
+        required: true
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🐙 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔥 Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          registry-url: "https://npm.pkg.github.com"
+          always-auth: true
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🏗️ Build Specific Level
+        run: |
+          folder=${{ github.event.inputs.level }}
+          if [ -d "$folder/frontend" ]; then
+            echo "Building frontend in $folder"
+            cd $folder/frontend
+            npm install
+            npm run build
+            cd -
+          fi
+          if [ -d "$folder/product-service" ]; then
+            echo "Building product-service in $folder"
+            cd $folder/product-service
+            npm install
+            npm run build
+            cd -
+          fi
+          if [ -d "$folder/user-service" ]; then
+            echo "Building user-service in $folder"
+            cd $folder/user-service
+            npm install
+            npm run build
+            cd -
+          fi
