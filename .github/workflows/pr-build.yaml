@@ -27,16 +27,6 @@ jobs:
           CHANGED_FOLDERS=$(git diff --name-only origin/main | grep -oE '^level[0-9]+/' | uniq | tr '\n' ' ')
           echo "CHANGED_FOLDERS=${CHANGED_FOLDERS}" >> $GITHUB_ENV
 
-      - name: 🐛 Debug Changed Folders
-        run: |
-          echo "CHANGED_FOLDERS=${CHANGED_FOLDERS}"
-
-      - name: 🐛 Debug Build Loop
-        run: |
-          for folder in $(echo $CHANGED_FOLDERS); do
-            echo "Processing folder: $folder"
-          done
-
       - name: 🏗️ Build Changed Folders
         if: ${{ env.CHANGED_FOLDERS != '' }}
         run: |
