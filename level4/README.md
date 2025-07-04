@@ -48,6 +48,9 @@ The following files were updated to support the new features:
 
 ---
 
+## build.sh 
+a file to compile all the code together so i dont need to manually keep running each command
+
 ## Notes
 - Ensure all dependencies are installed before running the project.
 - Follow the versioning guidelines for Material-UI to avoid issues with newer versions.
