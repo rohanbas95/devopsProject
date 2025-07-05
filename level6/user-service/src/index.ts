@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import mongoose from 'mongoose';
+import { MongoClient, ObjectID } from 'mongodb';
 import axios from 'axios';
 
 const app = express();
@@ -10,44 +10,76 @@ const port = 3001;
 app.use(bodyParser.json());
 app.use(cors());
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/userdb');
+// MongoDB Connection
+const mongoClientOptions = { useNewUrlParser: true, useUnifiedTopology: true };
+const mongoUrlLocal = "mongodb://admin:password@localhost:27017";  // this is for local docker
+// const mongoUrlLocal = "mongodb://localhost:27017";
+const mongoUrlDocker = "mongodb://admin:password@mongodb";
+let mongswitch = true; // switch to true if you want to use docker container
+const mongoUrl = mongswitch ? mongoUrlDocker : mongoUrlLocal;
 
-// User Schema
-const userSchema = new mongoose.Schema({
-  name: String
-});
-
-const User = mongoose.model('User', userSchema);
+// Database name
+const databaseName = "userdb";
 
 // REST API
-app.get('/api/users', async (req, res) => {
-  const users = await User.find();
-  res.json(users);
+app.get('/api/users', async (req: Request, res: Response) => {
+  try {
+    const client = await MongoClient.connect(mongoUrl, mongoClientOptions);
+    const db = client.db(databaseName);
+    const users = await db.collection("users").find().toArray();
+    client.close();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
 });
 
-app.post('/api/users', async (req, res) => {
-  const user = new User(req.body);
-  await user.save();
-  res.json(user);
+app.post('/api/users', async (req: Request, res: Response) => {
+  try {
+    const client = await MongoClient.connect(mongoUrl, mongoClientOptions);
+    const db = client.db(databaseName);
+    const user = req.body;
+    await db.collection("users").insertOne(user);
+    client.close();
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create user' });
+  }
 });
 
-app.put('/api/users/:id', async (req, res) => {
-  const { id } = req.params;
-  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
-  res.json(updatedUser);
+app.put('/api/users/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const client = await MongoClient.connect(mongoUrl, mongoClientOptions);
+    const db = client.db(databaseName);
+    const updatedUser = await db.collection("users").findOneAndUpdate(
+      { _id: new ObjectID(id) },
+      { $set: req.body },
+      { returnOriginal: false }
+    );
+    client.close();
+    res.json(updatedUser.value);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update user' });
+  }
 });
 
-app.delete('/api/users/:id', async (req, res) => {
-  const { id } = req.params;
-  await User.findByIdAndDelete(id);
-  res.sendStatus(204);
+app.delete('/api/users/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const client = await MongoClient.connect(mongoUrl, mongoClientOptions);
+    const db = client.db(databaseName);
+    await db.collection("users").deleteOne({ _id: new ObjectID(id) });
+    client.close();
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
 });
 
-// Example: Get all products for a user
 app.get('/api/users/:id/products', async (req, res) => {
   try {
-    const response = await axios.get('http://localhost:3002/api/products');
+    const response = await axios.get('http://my-prod:3002/api/products');
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch products' });
