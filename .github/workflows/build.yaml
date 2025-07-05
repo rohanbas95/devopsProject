@@ -75,8 +75,6 @@ jobs:
 
       - name: 🔑 Login to ECR
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry: 504584570834.dkr.ecr.ap-south-1.amazonaws.com
 
       - name: 📦 Build and Push Product-Service Image
         working-directory: ./${{ inputs.level }}/product-service
