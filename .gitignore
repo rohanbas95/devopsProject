@@ -12,3 +12,5 @@
 
 #javaScript
 **/*.js
+
+!server.js
