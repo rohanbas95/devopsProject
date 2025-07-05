@@ -1,11 +1,11 @@
 version: '3'
 services:
   my-prod:
-    image: productservice:1.1
+    image: 504584570834.dkr.ecr.ap-south-1.amazonaws.com/my-prod:latest
     ports:
       - 3002:3002
   my-user:
-    image: userservice:1.1
+    image: 504584570834.dkr.ecr.ap-south-1.amazonaws.com/my-user:latest
     ports:
       - 3001:3001
   mongodb:

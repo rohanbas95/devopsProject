@@ -114,6 +114,7 @@ jobs:
             sudo usermod -aG docker $USER
             groups $USER
             sudo systemctl restart docker
+            sudo dnf install git -y
 
             # the set -e option will cause the script to exit immediately if a simple command exits with a non-zero status
             set -e
