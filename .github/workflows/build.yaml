@@ -75,6 +75,8 @@ jobs:
 
       - name: 🔑 Login to ECR
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: 504584570834.dkr.ecr.ap-south-1.amazonaws.com
 
       - name: 📦 Build and Push Product-Service Image
         working-directory: ./${{ inputs.level }}/product-service
@@ -116,6 +118,9 @@ jobs:
             sudo systemctl restart docker
             sudo dnf install git -y
 
+            # Login to ECR (this will use the credentials configured in the GitHub Action)
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 504584570834.dkr.ecr.ap-south-1.amazonaws.com
+
             # the set -e option will cause the script to exit immediately if a simple command exits with a non-zero status
             set -e
             git clone https://github.com/rohanbas95/devopsProject.git
@@ -127,6 +132,8 @@ jobs:
             docker-compose pull || exit 1
             docker-compose up -d || exit 1
             sleep 10
+            cd ../../
+            rm -r devopsProject -f
 
   test:
     runs-on: ubuntu-latest
