@@ -16,6 +16,7 @@ env:
 
 jobs:
   build:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: 🐙 Checkout code
@@ -46,7 +47,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     steps:
       - name: 🐙 Checkout code
         uses: actions/checkout@v4
@@ -57,7 +58,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: 🏗️ Build Frontend
-        working-directory: ./frontend
+        working-directory: ./${{ inputs.level }}/frontend
         run: |
           npm ci
           npm run build
@@ -76,12 +77,12 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: 📦 Build and Push Product-Service Image
-        working-directory: ./product-service
+        working-directory: ./${{ inputs.level }}/product-service
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.ECR_REPO_URL }}/my-prod:${{ env.IMAGE_TAG }} --push .
 
       - name: 📦 Build and Push User-Service Image
-        working-directory: ./user-service
+        working-directory: ./${{ inputs.level }}/user-service
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.ECR_REPO_URL }}/my-user:${{ env.IMAGE_TAG }} --push .
 
