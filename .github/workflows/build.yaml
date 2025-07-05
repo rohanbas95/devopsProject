@@ -209,7 +209,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd devopsProject/${{ inputs.level }}    
-            docker-compose down -d || exit 1
+            docker-compose down || exit 1
             docker system prune -f || exit 1
             cd ../../
             rm -r devopsProject -f
