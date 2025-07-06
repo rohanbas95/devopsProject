@@ -58,7 +58,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: 🏗️ Build Frontend
-        if: false
         working-directory: ./${{ inputs.level }}/frontend
         run: |
           npm ci
@@ -90,7 +89,6 @@ jobs:
           docker build --platform linux/amd64 -t ${{ secrets.ECR_REPO_URL }}/my-user:${{ env.IMAGE_TAG }} --push .
 
       - name: 🚀 Deploy Frontend to S3
-        if: false
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --follow-symlinks --delete
