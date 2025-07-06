@@ -1,5 +1,7 @@
 name: Deploy infra
 
+run-name: Infra Deploy Folder ${{ inputs.level }}
+
 on:
   workflow_dispatch:
     inputs:
@@ -56,3 +58,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADDSECRET }}
         run: |
           gh secret set MY_PRIVATE_KEY --body "$(cat my-key.pem)"
+
+      # Step 8: Add EC2 DNS Name to GitHub Secrets
+      - name: Add EC2 DNS Name to GitHub Secrets
+        working-directory: ${{ inputs.level }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADDSECRET }}
+        run: |
+          DNS_NAME=$(terraform output -raw ec2_dns_name)
+          gh secret set EC2_DNS_NAME --body "$DNS_NAME"

@@ -124,3 +124,9 @@ resource "aws_instance" "my_instance" {
     Name = "MyEC2Instance"
   }
 }
+
+# Output the DNS name of the EC2 instance
+output "ec2_dns_name" {
+  value       = aws_instance.my_instance.public_dns
+  description = "The public DNS name of the EC2 instance"
+}
