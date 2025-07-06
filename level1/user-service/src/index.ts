@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema;
-
+// test changes
 // REST API
 app.get('/api/users', async (req, res) => {
   const users = await User.find();
