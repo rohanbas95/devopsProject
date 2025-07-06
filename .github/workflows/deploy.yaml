@@ -1,6 +1,6 @@
-name: Build Specific Folder
+name: Deploy and Test
 
-run-name: Build Folder ${{ inputs.level }}
+run-name: Deploy Folder ${{ inputs.level }}
 
 on:
   workflow_dispatch:
