@@ -57,11 +57,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # - name: 🏗️ Build Frontend
-      #   working-directory: ./${{ inputs.level }}/frontend
-      #   run: |
-      #     npm ci
-      #     npm run build
+      - name: 🏗️ Build Frontend
+        working-directory: ./${{ inputs.level }}/frontend
+        run: |
+          npm ci
+          npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -86,16 +86,16 @@ jobs:
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.ECR_REPO_URL }}/my-user:${{ env.IMAGE_TAG }} --push .
 
-      # - name: 🚀 Deploy Frontend to S3
-      #   uses: jakejarvis/s3-sync-action@v0.5.1
-      #   with:
-      #     args: --follow-symlinks --delete
-      #   env:
-      #     SOURCE_DIR: './${{ inputs.level }}/frontend/build'
-      #     AWS_S3_BUCKET: ${{ secrets.S3_BUCKET }}
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_REGION: ${{ env.AWS_REGION }}
+      - name: 🚀 Deploy Frontend to S3
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --follow-symlinks --delete
+        env:
+          SOURCE_DIR: './${{ inputs.level }}/frontend/build'
+          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: 🐳 Deploy Container
         if: false
