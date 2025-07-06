@@ -58,6 +58,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: 🏗️ Build Frontend
+        if: false
         working-directory: ./${{ inputs.level }}/frontend
         run: |
           npm ci
@@ -77,16 +78,19 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: 📦 Build and Push Product-Service Image
+        if: false
         working-directory: ./${{ inputs.level }}/product-service
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.ECR_REPO_URL }}/my-prod:${{ env.IMAGE_TAG }} --push .
 
       - name: 📦 Build and Push User-Service Image
+        if: false
         working-directory: ./${{ inputs.level }}/user-service
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.ECR_REPO_URL }}/my-user:${{ env.IMAGE_TAG }} --push .
 
       - name: 🚀 Deploy Frontend to S3
+        if: false
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --follow-symlinks --delete
@@ -98,7 +102,6 @@ jobs:
           AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: 🐳 Deploy Container
-        if: false
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_DNS_NAME }}
